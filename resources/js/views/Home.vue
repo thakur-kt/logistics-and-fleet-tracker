@@ -1,0 +1,20 @@
+<template>
+    <div>
+      
+      <h2>Home</h2>{{ auth }}
+      <div v-if="auth.user?.roles?.some(r => r.name === 'admin')">
+    <router-link to="/admin">Admin Dashboard</router-link>
+   
+  </div>
+  <router-link to="/roles-manager">Roles Manager</router-link>
+  <router-link to="/permission-manager">Permission Manager</router-link>
+  <router-link to="/roles-permission-manager">Roles Permission Manager</router-link>
+    </div>
+  </template>
+  
+  <script setup>
+  import { useAuthStore } from '@/stores/auth'
+const auth = useAuthStore()
+
+  </script>
+  

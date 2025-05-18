@@ -16,3 +16,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/{any}', function () {
+    return view('app'); // or 'welcome' or 'index' — whatever you named the blade file
+})->where('any', '.*');

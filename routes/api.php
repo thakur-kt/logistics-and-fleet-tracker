@@ -2,18 +2,79 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Admin\UserRoleController;
+use App\Http\Controllers\Api\Admin\PermissionController;
+use App\Http\Controllers\Api\Admin\RolePermissionController;
+// use App\Http\Controllers\Api\Admin\VehicleController as AdminVehicleController;
+// use App\Http\Controllers\Api\Dispatcher\DeliveryOrderController as DispatcherOrderController;
+// use App\Http\Controllers\Api\Driver\TrackingController;
+// use Illuminate\Support\Facades\Redis;
+// Public
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::middleware('auth:sanctum')->get('user', function (Request $request) {
+    return response()->json([
+        'user' => $request->user(),
+        'roles' => $request->user()->getRoleNames(),
+        'permissions' => $request->user()->getAllPermissions()->pluck('name'),
+    ]);
 });
+
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+
+//roles
+Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('/users', [UserRoleController::class, 'index']);
+    Route::get('/roles/all', [UserRoleController::class, 'allRoles']);
+    Route::post('/users/{user}/roles', [UserRoleController::class, 'assignRoles']);
+});
+
+//permissions
+Route::middleware(['auth:sanctum', 'role:admin'])->prefix('/admin')->group(function () {
+    Route::get('/permissions', [PermissionController::class, 'index']);
+    Route::get('/users/{user}/permissions', [PermissionController::class, 'getUserPermissions']);
+    Route::post('/users/{user}/assign-permission', [PermissionController::class, 'assign']);
+    Route::post('/users/{user}/revoke-permission', [PermissionController::class, 'revoke']);
+});
+
+//roles and permission
+Route::middleware(['auth:sanctum', 'role:admin'])->prefix('/admin')->group(function () {
+    Route::get('/roles', [RolePermissionController::class, 'roles']);
+    Route::get('/permissions', [RolePermissionController::class, 'permissions']);
+    Route::post('/roles', [RolePermissionController::class, 'createRole']);
+    Route::post('/permissions', [RolePermissionController::class, 'createPermission']);
+    Route::post('/roles/assign-permission', [RolePermissionController::class, 'assignPermissionToRole']);
+    Route::post('/roles/remove-permission', [RolePermissionController::class, 'removePermissionFromRole']);
+});
+// Route::post('/logout', [AuthController::class, 'logout']);
+// Protected
+// Route::middleware('auth:sanctum')->group(function () {
+    // Route::post('/logout', [AuthController::class, 'logout']);
+
+    // Route::middleware('role:admin')->prefix('admin')->group(function () {
+    //     Route::apiResource('vehicles', AdminVehicleController::class);
+    // });
+    // Route::apiResource('vehicles', VehicleController::class);
+    // Route::get('drivers', [VehicleController::class, 'drivers']);
+    // Route::apiResource('delivery-orders', DeliveryOrderController::class);
+    // Route::middleware('role:dispatcher')->prefix('dispatcher')->group(function () {
+    //     Route::apiResource('orders', DispatcherOrderController::class);
+    // });
+
+    // Route::middleware('role:driver')->prefix('driver')->group(function () {
+    //     Route::post('/location/update', [TrackingController::class, 'update']);
+    //     Route::get('/orders', [TrackingController::class, 'myOrders']);
+    // });
+// });?
+// Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+//     Route::get('/admin/dashboard', [AdminController::class, 'index']);
+// });
+
+// Route::middleware(['auth:sanctum', 'permission:manage vehicles'])->group(function () {
+//     Route::post('/vehicles', [VehicleController::class, 'store']);
+// });
+// $user->assignRole('admin'); // or $user->syncRoles(['admin'])
+// Route::middleware(['auth:sanctum', 'role:admin'])->get('/admin/dashboard', fn () => 'Admin area');
+
+// Route::middleware(['auth:sanctum', 'role:driver'])->get('/driver/vehicle', fn () => 'Driver area');
