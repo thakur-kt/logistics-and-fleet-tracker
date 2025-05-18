@@ -8,7 +8,7 @@
   </template>
   
   <script setup>
-  import Vehicles from '../components/admin/Vehicles.vue';
+  import Vehicles from '../components/admin/vehicles/Index.vue';
   import { useAuthStore } from '@/stores/auth'
   const auth = useAuthStore()
   </script>

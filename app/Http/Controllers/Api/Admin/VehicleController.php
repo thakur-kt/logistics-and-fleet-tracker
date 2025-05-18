@@ -1,4 +1,6 @@
 <?php
+namespace App\Http\Controllers\Api\Admin;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Vehicle;
@@ -18,12 +20,12 @@ class VehicleController extends Controller
     public function store(Request $request)
 {
     $validated = $request->validate([
-        'user_id' => 'required|exists:users,id',
+        // 'user_id' => 'required|exists:users,id',
         'number_plate' => 'required|unique:vehicles,number_plate',
         'model' => 'required|string|max:255',
         'status' => 'in:idle,en_route,maintenance',
     ]);
-
+    $validated['user_id'] = $request->user()->id;
     $vehicle = Vehicle::create($validated);
 
     return response()->json(['vehicle' => $vehicle], 201);

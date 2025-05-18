@@ -1,10 +1,8 @@
-// import { createRouter, createWebHistory } from 'vue-router';
-
 import AdminView from '../views/AdminView.vue';
 import UserRoleManager from '../components/admin/UserRoleManager.vue';
 import PermissionManager from '../components/admin/PermissionManager.vue';
 import RolePermissionManager from '../components/admin/RolePermissionManager.vue';
-// import DispatcherView from '../views/DispatcherView.vue';
+import VehiclesView from '../components/admin/vehicles/Index.vue';
 // import DriverView from '../views/DriverView.vue';
 // import VehicleForm from '../components/admin/VehicleForm.vue'
 // const routes = [
@@ -72,6 +70,11 @@ const routes = [
   {
     path: '/roles-permission-manager',
     component: RolePermissionManager,
+    meta: { requiresAuth: true, role: ['admin' ]}
+  },
+  {
+    path: '/vehicles',
+    component: VehiclesView,
     meta: { requiresAuth: true, role: ['admin' ]}
   },
   // {

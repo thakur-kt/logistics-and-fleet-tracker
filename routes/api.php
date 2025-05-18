@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Admin\UserRoleController;
 use App\Http\Controllers\Api\Admin\PermissionController;
 use App\Http\Controllers\Api\Admin\RolePermissionController;
-// use App\Http\Controllers\Api\Admin\VehicleController as AdminVehicleController;
+use App\Http\Controllers\Api\Admin\VehicleController;
 // use App\Http\Controllers\Api\Dispatcher\DeliveryOrderController as DispatcherOrderController;
 // use App\Http\Controllers\Api\Driver\TrackingController;
 // use Illuminate\Support\Facades\Redis;
@@ -47,6 +47,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('/admin')->group(funct
     Route::post('/roles/assign-permission', [RolePermissionController::class, 'assignPermissionToRole']);
     Route::post('/roles/remove-permission', [RolePermissionController::class, 'removePermissionFromRole']);
 });
+Route::middleware('auth:sanctum')->apiResource('vehicles', VehicleController::class);
 // Route::post('/logout', [AuthController::class, 'logout']);
 // Protected
 // Route::middleware('auth:sanctum')->group(function () {

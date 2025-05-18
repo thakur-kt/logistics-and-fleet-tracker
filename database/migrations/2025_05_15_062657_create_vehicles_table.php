@@ -16,6 +16,9 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('number_plate');
             $table->string('model');
+            $table->string('last_lat');
+            $table->string('last_lng');
+            
             $table->enum('status', ['idle', 'en_route', 'maintenance'])->default('idle');
             $table->timestamps();
         });

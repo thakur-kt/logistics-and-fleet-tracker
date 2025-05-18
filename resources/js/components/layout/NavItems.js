@@ -19,6 +19,12 @@ export const navItems = [
     ],
   },
   {
+    label: 'Vehicles',
+    to: '/vehicles',
+    icon: loadIcon('Truck'),
+    roles: ['admin', 'user']
+  },
+  {
     label: 'Settings',
     to: '/settings',
     icon: loadIcon('Settings'),
