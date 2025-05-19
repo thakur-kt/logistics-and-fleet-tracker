@@ -22,3 +22,7 @@ share live GPS coordinates of their vehicle.
 Created coordinates table to update vehicles live location
 4. Profile Access
 View/edit basic driver profile.
+
+- Driver's Dashboard
+-Trips per Day (Line Chart)
+-Trip Status Summary (Pie or Doughnut Chart)
