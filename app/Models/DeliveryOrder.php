@@ -9,6 +9,21 @@ class DeliveryOrder extends Model
 {
     use HasFactory;
 
+     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'pickup_location',
+        'dropoff_location',
+        'scheduled_at',
+         'status',
+         'vehicle_id',
+         'user_id'
+    ];
+
+
     public function vehicle() {
         return $this->belongsTo(Vehicle::class);
     }

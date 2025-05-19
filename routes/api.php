@@ -7,9 +7,12 @@ use App\Http\Controllers\Api\Admin\UserRoleController;
 use App\Http\Controllers\Api\Admin\PermissionController;
 use App\Http\Controllers\Api\Admin\RolePermissionController;
 use App\Http\Controllers\Api\Admin\VehicleController;
-// use App\Http\Controllers\Api\Dispatcher\DeliveryOrderController as DispatcherOrderController;
+use App\Http\Controllers\Api\Dispatcher\DeliveryOrderController;
 // use App\Http\Controllers\Api\Driver\TrackingController;
 // use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Broadcast;
+
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
 // Public
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -47,18 +50,17 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('/admin')->group(funct
     Route::post('/roles/assign-permission', [RolePermissionController::class, 'assignPermissionToRole']);
     Route::post('/roles/remove-permission', [RolePermissionController::class, 'removePermissionFromRole']);
 });
-Route::middleware('auth:sanctum')->apiResource('vehicles', VehicleController::class);
 // Route::post('/logout', [AuthController::class, 'logout']);
 // Protected
-// Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     // Route::post('/logout', [AuthController::class, 'logout']);
 
     // Route::middleware('role:admin')->prefix('admin')->group(function () {
     //     Route::apiResource('vehicles', AdminVehicleController::class);
     // });
-    // Route::apiResource('vehicles', VehicleController::class);
-    // Route::get('drivers', [VehicleController::class, 'drivers']);
-    // Route::apiResource('delivery-orders', DeliveryOrderController::class);
+    Route::apiResource('vehicles', VehicleController::class);
+    Route::get('drivers', [VehicleController::class, 'drivers']);
+    Route::apiResource('delivery-orders', DeliveryOrderController::class);
     // Route::middleware('role:dispatcher')->prefix('dispatcher')->group(function () {
     //     Route::apiResource('orders', DispatcherOrderController::class);
     // });
@@ -67,7 +69,7 @@ Route::middleware('auth:sanctum')->apiResource('vehicles', VehicleController::cl
     //     Route::post('/location/update', [TrackingController::class, 'update']);
     //     Route::get('/orders', [TrackingController::class, 'myOrders']);
     // });
-// });?
+});
 // Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 //     Route::get('/admin/dashboard', [AdminController::class, 'index']);
 // });

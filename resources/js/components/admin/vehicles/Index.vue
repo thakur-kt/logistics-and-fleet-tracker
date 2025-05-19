@@ -3,7 +3,9 @@
   <div class="p-6">
     <div class="flex justify-between items-center mb-4">
       <h1 class="text-xl font-bold">Vehicles</h1>
-      <button @click="openModal()" class="bg-blue-600 text-white px-4 py-2 rounded">+ Add Vehicle</button>
+      <button @click="openModal()" 
+      v-has-permission="'create_vehicle'"
+      class="bg-blue-600 text-white px-4 py-2 rounded">+ Add Vehicle</button>
     </div>
 
     <table class="min-w-full bg-white shadow rounded">

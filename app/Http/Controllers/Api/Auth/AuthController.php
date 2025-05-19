@@ -26,7 +26,7 @@ class AuthController extends Controller
         return response()->json([
             'user' => $user, 
             'roles' => $user->getRoleNames(),
-            // 'permissions' => $user->getAllPermissions()->pluck('name'),
+            'permissions' => $user->getAllPermissions()->pluck('name'),
             'token' => $token
         ]);
     }
@@ -43,11 +43,14 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken('api-token')->plainTextToken;
-
         return response()->json([
-            'user' => $user, 
+            'user' =>[
+             'id'=> $user->id,
+             'name'=> $user->name,
+             'role'=> $user->role
+            ], 
             'roles' => $user->getRoleNames(),
-            // 'permissions' => $user->getAllPermissions()->pluck('name'),
+            'permissions' => $user->getAllPermissions()->pluck('name'),
             'token' => $token]);
     }
 

@@ -25,5 +25,19 @@ class CreateRoleSeeder extends Seeder
         $admin->givePermissionTo('manage users');
         $dispatcher->givePermissionTo(['assign deliveries', 'track vehicle']);
         $driver->givePermissionTo('track vehicle');
+
+
+        // Assign permissions
+$driverRole = Role::create(['name' => 'driver']);
+Permission::create(['name' => 'view assigned orders']);
+Permission::create(['name' => 'update order status']);
+Permission::create(['name' => 'view profile']);
+Permission::create(['name' => 'update location']);
+$driverRole->givePermissionTo([
+    'view assigned orders',
+    'update order status',
+    'view profile',
+    'update location',
+]);
     }
 }

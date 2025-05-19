@@ -62,7 +62,7 @@ const loading = ref(true)
 
 const fetchData = async () => {
   const [userRes, permissionRes] = await Promise.all([
-    api.get('/users'),
+    api.get('/admin/users'),
     api.get('/admin/permissions')
   ])
   users.value = userRes.data

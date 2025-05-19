@@ -3,30 +3,7 @@ import UserRoleManager from '../components/admin/UserRoleManager.vue';
 import PermissionManager from '../components/admin/PermissionManager.vue';
 import RolePermissionManager from '../components/admin/RolePermissionManager.vue';
 import VehiclesView from '../components/admin/vehicles/Index.vue';
-// import DriverView from '../views/DriverView.vue';
-// import VehicleForm from '../components/admin/VehicleForm.vue'
-// const routes = [
-//   { path: '/admin', component: AdminView },
-//   { path: '/dispatcher', component: DispatcherView },
-//   { path: '/driver', component: DriverView },
-//   {
-//     path: '/vehicles/create',
-//     name: 'VehicleCreate',
-//     component: VehicleForm,
-//   },
-//   {
-//     path: '/vehicles/:id/edit',
-//     name: 'VehicleEdit',
-//     component: VehicleForm,
-//     props: route => ({ vehicleId: route.params.id }),
-//   }
-// ];
-
-// const router = createRouter({
-//   history: createWebHistory(),
-//   routes,
-// });
-
+import DeliveryOrders from '../components/dispatcher/orders/Index.vue';
 // export default router;
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
@@ -38,7 +15,7 @@ const routes = [
   { path: '/', component: Home ,name:'home',meta: { requiresAuth: true, role: ['admin' ]}},
   { path: '/login', component: Login ,  name: 'login' ,beforeEnter: (to, from, next) => {
     const auth = useAuthStore()
-    if (auth.user) {
+    if (auth.token) {
       next({ name: 'home' })  // or wherever your home/dashboard is
     } else {
       next()
@@ -46,7 +23,7 @@ const routes = [
   },},
   { path: '/register', component: Register,name: 'register', beforeEnter: (to, from, next) => {
     const auth = useAuthStore()
-    if (auth.user) {
+    if (auth.token) {
       next({ name: 'home' })  // or wherever your home/dashboard is
     } else {
       next()
@@ -77,6 +54,12 @@ const routes = [
     component: VehiclesView,
     meta: { requiresAuth: true, role: ['admin' ]}
   },
+  {
+    path: '/delivery-orders',
+    component: DeliveryOrders,
+    meta: { requiresAuth: true, role: ['admin' ]}
+  },
+  DeliveryOrders
   // {
   //   path: '/dispatcher',
   //   name: 'dispatcher',

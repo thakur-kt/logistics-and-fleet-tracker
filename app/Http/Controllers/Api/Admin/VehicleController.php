@@ -61,6 +61,6 @@ public function destroy($id)
 public function drivers()
 {
     // Assuming 'driver' role is flagged via a 'role' field or via spatie/laravel-permission
-    return User::where('role', 'driver')->get();
+    return User::role('driver')->get();
 }
 }

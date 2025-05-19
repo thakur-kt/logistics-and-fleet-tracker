@@ -25,8 +25,8 @@ export const useAuthStore = defineStore('auth', {
   
           this.token = response.data.token
           this.user = response.data.user
-          // this.roles = response.data.roles
-          // this.permissions = response.data.permissions
+          this.roles = response.data.roles
+          this.permissions = response.data.permissions
           this.errors = null
   
           // Store token in localStorage (optional)
@@ -48,8 +48,8 @@ export const useAuthStore = defineStore('auth', {
         const res = await api.post('/login', form)
         this.token = res.data.token
         this.user = res.data.user
-        // this.roles = res.data.roles
-        // this.permissions = res.data.permissions
+        this.roles = res.data.roles
+        this.permissions = res.data.permissions
         router.push({ name: 'home' })
       } catch (err) {
         this.errors = err.response?.data?.errors || { general: 'Login failed' }

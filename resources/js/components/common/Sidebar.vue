@@ -21,16 +21,22 @@
       <nav class="flex-1 p-2 space-y-2">
         <template v-for="item in navItems" :key="item.name">
         <router-link
+        v-has-role="item.roles"
         v-if="!item.children"
+      
          :to="item.to" 
           class="flex items-center gap-3 p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
           :class="{ 'bg-gray-200 dark:bg-gray-700': route.path === item.to }">
           <component :is="item.icon" class="w-5 h-5" />
           <span v-if="isSidebarExpanded">{{ item.label }}</span>
         </router-link>
+
+      
+<!-- <button                                                                                v-has-permission="'create_vehicle'">Add Vehicle</button> -->
         <!-- Collapsible Group -->
         <div v-else>
           <button
+          v-has-role="item.roles"
             @click="toggleGroup(item.name)"
             class="flex items-center w-full gap-3 p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
             :class="{'bg-gray-200 dark:bg-gray-700': route.path === item.to ||isGroupActive(item)}"
@@ -39,7 +45,7 @@
               <component :is="item.icon" class="w-5 h-5" />
               <span v-if="isSidebarExpanded" class="text-sm">{{ item.label }}</span>
             </div>
-            <ChevronDownIcon v-if="isSidebarExpanded" class="w-4 h-4 transition-transform" :class="{ 'rotate-180': openGroups[item.name] }" />
+            
             <component
             v-if="item.suffixIcon"
             :is="item.suffixIcon"
