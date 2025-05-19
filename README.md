@@ -18,18 +18,7 @@ Features:
 2. Change Delivery Order Status
 Assigned → In Transit → Delivered or Failed
 Trigger real-time updates when status changes.
-
-3. Live Location Updates (Optional)
-Share live GPS coordinates of their vehicle.
-
-Update location periodically via API or WebSocket for real-time tracking.
-
+share live GPS coordinates of their vehicle.
+Created coordinates table to update vehicles live location
 4. Profile Access
 View/edit basic driver profile.
-
-Change password or contact details.
-
-5. Notifications (Optional)
-Receive alerts for new assignments or order updates.
-
-

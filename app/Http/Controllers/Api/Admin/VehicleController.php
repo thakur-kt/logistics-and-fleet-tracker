@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Vehicle;
 use App\Models\User;
+use App\Models\Coordinate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 class VehicleController extends Controller
@@ -63,4 +64,18 @@ public function drivers()
     // Assuming 'driver' role is flagged via a 'role' field or via spatie/laravel-permission
     return User::role('driver')->get();
 }
+
+public function updateLocation(Request $request, $id)
+{
+    $coords= new Coordinate();
+    $coords->latitude =  $request->latitude;
+    $coords->longitude =  $request->longitude;
+    $coords->vehicle_id =  $request->vehicle_id;
+    $coords->save();
+
+    // event(new \App\Events\VehicleLocationUpdated($coords));
+
+    return response()->json(['success' => true]);
+}
+
 }

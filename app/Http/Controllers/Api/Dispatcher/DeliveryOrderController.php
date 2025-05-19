@@ -53,7 +53,7 @@ public function update(Request $request, $id)
     }
 
     $order->update($validated);
-    event(new DeliveryOrderUpdated($order));
+    // event(new DeliveryOrderUpdated($order));
     return response()->json(['order' => $order]);
 }
 

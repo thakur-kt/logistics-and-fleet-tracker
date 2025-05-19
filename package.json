@@ -21,7 +21,9 @@
         "pinia": "^3.0.2",
         "pinia-plugin-persistedstate": "^4.3.0",
         "pusher-js": "^8.4.0",
-        "vue-router": "^4.5.1"
+        "vee-validate": "^4.15.0",
+        "vue-router": "^4.5.1",
+        "yup": "^1.6.1"
     },
     "name": "logistics-and-fleet-tracker",
     "version": "1.0.0",

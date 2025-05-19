@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\Admin\PermissionController;
 use App\Http\Controllers\Api\Admin\RolePermissionController;
 use App\Http\Controllers\Api\Admin\VehicleController;
 use App\Http\Controllers\Api\Dispatcher\DeliveryOrderController;
-// use App\Http\Controllers\Api\Driver\TrackingController;
+use App\Http\Controllers\Api\Driver\DriverController;
 // use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Broadcast;
 
@@ -61,6 +61,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('vehicles', VehicleController::class);
     Route::get('drivers', [VehicleController::class, 'drivers']);
     Route::apiResource('delivery-orders', DeliveryOrderController::class);
+    Route::post('/vehicles/{id}/location', [VehicleController::class, 'updateLocation']);
     // Route::middleware('role:dispatcher')->prefix('dispatcher')->group(function () {
     //     Route::apiResource('orders', DispatcherOrderController::class);
     // });
@@ -69,6 +70,9 @@ Route::middleware('auth:sanctum')->group(function () {
     //     Route::post('/location/update', [TrackingController::class, 'update']);
     //     Route::get('/orders', [TrackingController::class, 'myOrders']);
     // });
+    Route::get('drivers/me', [DriverController::class, 'show']);
+    Route::put('drivers/me', [DriverController::class, 'update']);
+
 });
 // Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 //     Route::get('/admin/dashboard', [AdminController::class, 'index']);

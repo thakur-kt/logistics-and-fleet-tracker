@@ -4,12 +4,16 @@ import PermissionManager from '../components/admin/PermissionManager.vue';
 import RolePermissionManager from '../components/admin/RolePermissionManager.vue';
 import VehiclesView from '../components/admin/vehicles/Index.vue';
 import DeliveryOrders from '../components/dispatcher/orders/Index.vue';
+import LiveTracking from '../components/admin/vehicles/LiveTracking.vue';
+import DriverProfile from '../components/driver/DriverProfile.vue';
 // export default router;
-import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
+
 import Home from '@/views/Home.vue'
 import Register from '@/views/Register.vue'
 import Login from '@/views/Login.vue'
+import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+// import { useTrackingStore } from '@/stores/tracking';
 
 const routes = [
   { path: '/', component: Home ,name:'home',meta: { requiresAuth: true, role: ['admin' ]}},
@@ -59,13 +63,18 @@ const routes = [
     component: DeliveryOrders,
     meta: { requiresAuth: true, role: ['admin' ]}
   },
-  DeliveryOrders
-  // {
-  //   path: '/dispatcher',
-  //   name: 'dispatcher',
-  //   component: () => import('@/views/DispatcherDashboard.vue'),
-  //   meta: { requiresAuth: true, roles: ['dispatcher'] }
-  // }
+ {
+  path: '/driver/live-tracking/:vehicleId',
+  name: 'DriverLiveTracking',
+  component: LiveTracking,
+  meta: { requiresAuth: true }, 
+ },
+  {
+    path: '/driver-profile',
+    name: 'driver-profile',
+    component: DriverProfile,
+    meta: { requiresAuth: true }
+  }
 ]
 
 const router = createRouter({
@@ -76,6 +85,19 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const auth = useAuthStore()
 
+  // const trackingStore = useTrackingStore();
+
+  // if (to.path === '/driver/live-tracking') {
+  //   // Start tracking when entering
+  //   trackingStore.startTracking(auth.vehicle_id);
+  // }
+
+  // if (from.path === '/driver/live-tracking') {
+  //   // Stop tracking when leaving
+  //   trackingStore.stopTracking();
+  // }
+
+  //auth logic
   if (to.meta.requiresAuth) {
    
     if (!auth.user && auth.token) await auth.fetchUser()

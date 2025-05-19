@@ -21,3 +21,6 @@ Broadcast::channel('orders.{orderId}', function ($user, $orderId) {
     // You can restrict access to the channel here
     return true; // Or $user->id === $someCondition
 });
+Broadcast::channel('vehicle.{id}', function ($user, $id) {
+    return true; // Optional: add condition to restrict viewers
+});

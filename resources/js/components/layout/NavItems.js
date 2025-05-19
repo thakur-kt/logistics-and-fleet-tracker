@@ -32,6 +32,12 @@ export const navItems = [
     roles: ['admin', 'driver']
   },
   {
+    label: 'Profile',
+    to: '/driver-profile',
+    icon: loadIcon('Users'),
+    roles: ['admin', 'driver']
+  },
+  {
     label: 'Settings',
     to: '/settings',
     icon: loadIcon('Settings'),

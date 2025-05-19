@@ -21,7 +21,7 @@
         <button @click="fetchOrders" class="bg-gray-200 px-3 rounded">Filter</button>
       </div>
   
-      <table class="w-full bg-white shadow rounded text-sm">
+      <table class="w-full bg-white shadow rounded text-sm text-center">
         <thead class="bg-gray-100">
           <tr>
             <th class="p-2">#</th>
@@ -30,6 +30,7 @@
             <th class="p-2">Status</th>
             <th class="p-2">Vehicle</th>
             <th class="p-2">Driver</th>
+            <th class="p-2">Tracking Link</th>
             <th class="p-2">Actions</th>
           </tr>
         </thead>
@@ -41,6 +42,7 @@
             <td class="p-2 capitalize">{{ order.status }}</td>
             <td class="p-2">{{ order.vehicle?.number_plate || '-' }}</td>
             <td class="p-2">{{ order.user?.name || '-' }}</td>
+            <td class="p-2"><a class="text-blue-600" :href="'/driver/live-tracking/'+order.vehicle.id">Track</a></td>
             <td class="p-2 space-x-2">
               <button class="text-blue-600" @click="openModal(order)">Edit</button>
               <button class="text-red-600" @click="deleteOrder(order.id)">Delete</button>
@@ -90,17 +92,20 @@
       fetchOrders()
     }
   }
-onMounted(() => {
-  fetchOrders();
   const authStore = useAuthStore();
   const Echo = initEcho(authStore.token);
-
-  const orderId = 2; // or dynamically get the order ID you're tracking
-
+  const orderId = 2;
+  const vehicleId=1;
+onMounted(() => {
+  fetchOrders();
   //note: if not listening run : php artisan queue:work
 Echo.private(`orders.${orderId}`)
   .listen('.DeliveryOrderUpdated', (e) => {
     console.log('✅ Order Updated Event:', e.order);
+  });
+  Echo.private(`vehicle.${vehicleId}`)
+  .listen('.TrackingLive', (e) => {
+    console.log('✅ TrackingLive Event:', e);
   });
 });
 onBeforeUnmount(() => {
