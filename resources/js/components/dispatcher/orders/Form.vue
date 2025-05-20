@@ -31,9 +31,9 @@
               <option v-for="v in vehicles" :key="v.id" :value="v.id">{{ v.number_plate }}</option>
             </select>
           </div>
-          <div>
+          <div v-if="order?.id">
             <label>Assign Driver</label>
-            <select v-model="form.user_id" class="form-select w-full">
+            <select v-model="form.driver_id" class="form-select w-full">
               <option :value="null">--</option>
               <option v-for="d in drivers" :key="d.id" :value="d.id">{{ d.email }}</option>
             </select>
@@ -66,7 +66,7 @@
     dropoff_location: '',
     status: 'pending',
     vehicle_id: null,
-    user_id: null,
+    driver_id: null,
   })
   
   const vehicles = ref([])
@@ -83,7 +83,7 @@
           dropoff_location: '',
           status: 'pending',
           vehicle_id: null,
-          user_id: null,
+          driver_id: null,
         }
       }
     },

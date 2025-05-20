@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('delivery_orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->comment('Placed by');
+            $table->foreignId('driver_id')->comment('Driver Assigned')->nullable();
             $table->foreignId('vehicle_id')->nullable()->constrained()->onDelete('set null');
             $table->string('pickup_location');
             $table->string('dropoff_location');

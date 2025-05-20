@@ -26,3 +26,6 @@ View/edit basic driver profile.
 - Driver's Dashboard
 -Trips per Day (Line Chart)
 -Trip Status Summary (Pie or Doughnut Chart)
+
+- Auto Assign Delivery
+- horizon dashboard

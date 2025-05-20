@@ -23,6 +23,11 @@ class DriverController extends Controller
         ]);
 
         $user->update($validated);
+        $longitude = '';
+        $latitude = '';
+        //update driver's current location in redis
+        Redis::geoadd('drivers:locations', $longitude, $latitude, "driver_{$driver->id}");
+
 
         return response()->json(['message' => 'Profile updated', 'user' => $user]);
     }

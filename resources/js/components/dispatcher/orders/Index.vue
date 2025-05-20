@@ -41,7 +41,7 @@
             <td class="p-2">{{ order.dropoff_location }}</td>
             <td class="p-2 capitalize">{{ order.status }}</td>
             <td class="p-2">{{ order.vehicle?.number_plate || '-' }}</td>
-            <td class="p-2">{{ order.user?.name || '-' }}</td>
+            <td class="p-2">{{ order.driver?.name || '-' }}</td>
             <td class="p-2"><a class="text-blue-600" :href="'/driver/live-tracking/'+order.vehicle.id">Track</a></td>
             <td class="p-2 space-x-2">
               <button class="text-blue-600" @click="openModal(order)">Edit</button>
@@ -88,7 +88,7 @@
   
   const deleteOrder = async (id) => {
     if (confirm('Delete this order?')) {
-      await api.delete(` /delivery-orders/${id}`)
+      await api.delete(`/delivery-orders/${id}`)
       fetchOrders()
     }
   }
