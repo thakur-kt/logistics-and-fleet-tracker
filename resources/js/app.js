@@ -5,6 +5,7 @@ import { createPinia } from "pinia";
 import App from "./components/App.vue";
 import router from "./router";
 import "../css/app.css"; // Import Tailwind
+import 'leaflet/dist/leaflet.css';
 import api from "./axios";
 import { useAuthStore } from "@/stores/auth";
 import { vHasRole, vHasPermission } from './directives/permission.js';

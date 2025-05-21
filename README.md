@@ -29,3 +29,6 @@ View/edit basic driver profile.
 
 - Auto Assign Delivery
 - horizon dashboard
+
+✅ Real-Time Vehicle Tracking
+-Show marker for each live vehicle 

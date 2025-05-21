@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Admin\RolePermissionController;
 use App\Http\Controllers\Api\Admin\VehicleController;
 use App\Http\Controllers\Api\Dispatcher\DeliveryOrderController;
 use App\Http\Controllers\Api\Driver\DriverController;
+use App\Http\Controllers\Api\Admin\DashboardController;
 // use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Broadcast;
 
@@ -49,39 +50,23 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('/admin')->group(funct
     Route::post('/permissions', [RolePermissionController::class, 'createPermission']);
     Route::post('/roles/assign-permission', [RolePermissionController::class, 'assignPermissionToRole']);
     Route::post('/roles/remove-permission', [RolePermissionController::class, 'removePermissionFromRole']);
+    Route::get('/dashboard-stats', [DashboardController::class, 'dashboardStats']);
+
+   
 });
-// Route::post('/logout', [AuthController::class, 'logout']);
 // Protected
 Route::middleware('auth:sanctum')->group(function () {
-    // Route::post('/logout', [AuthController::class, 'logout']);
-
-    // Route::middleware('role:admin')->prefix('admin')->group(function () {
-    //     Route::apiResource('vehicles', AdminVehicleController::class);
-    // });
+    
     Route::apiResource('vehicles', VehicleController::class);
     Route::get('drivers', [VehicleController::class, 'drivers']);
     Route::apiResource('delivery-orders', DeliveryOrderController::class);
     Route::post('/vehicles/{id}/location', [VehicleController::class, 'updateLocation']);
-    // Route::middleware('role:dispatcher')->prefix('dispatcher')->group(function () {
-    //     Route::apiResource('orders', DispatcherOrderController::class);
-    // });
-
-    // Route::middleware('role:driver')->prefix('driver')->group(function () {
-    //     Route::post('/location/update', [TrackingController::class, 'update']);
-    //     Route::get('/orders', [TrackingController::class, 'myOrders']);
-    // });
+   
     Route::get('drivers/me', [DriverController::class, 'show']);
     Route::put('drivers/me', [DriverController::class, 'update']);
 
+    Route::post('/tracking/update', [DriverController::class, 'updateLocation']);
+    // Route::get('/tracking/{vehicleId}', [VehicleController::class, 'getLocation']);
+    Route::get('/vehicles-coordinates', [VehicleController::class, 'getAllVehicleCoords']);
+
 });
-// Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
-//     Route::get('/admin/dashboard', [AdminController::class, 'index']);
-// });
-
-// Route::middleware(['auth:sanctum', 'permission:manage vehicles'])->group(function () {
-//     Route::post('/vehicles', [VehicleController::class, 'store']);
-// });
-// $user->assignRole('admin'); // or $user->syncRoles(['admin'])
-// Route::middleware(['auth:sanctum', 'role:admin'])->get('/admin/dashboard', fn () => 'Admin area');
-
-// Route::middleware(['auth:sanctum', 'role:driver'])->get('/driver/vehicle', fn () => 'Driver area');

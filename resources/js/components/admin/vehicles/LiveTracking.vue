@@ -13,7 +13,7 @@
   import { useRoute } from 'vue-router';
 //   import { useAuthStore } from '@/stores/auth';
   import api from '@/axios';
-  
+  import indiaCities from './india-latlongs.json'; // If stored locally
   const route = useRoute();
   const vehicleId = route.params.vehicleId;
 //   const authStore = useAuthStore();
@@ -24,13 +24,17 @@ const startTracking = () => {
   if (useMockLocation.value) {
     // 🚧 Mock location every 5 seconds
     const intervalId = setInterval(() => {
+      // Randomly pick one
+const randomCity = indiaCities[Math.floor(Math.random() * indiaCities.length)];
+
+console.log(`Start from ${randomCity.city}:`, randomCity.lat, randomCity.lng);
       const mockCoords = {
-        latitude: 28.6139 + Math.random() * 0.01,
-        longitude: 77.2090 + Math.random() * 0.01,
+        latitude: randomCity.lat,
+        longitude: randomCity.lng,
       };
       console.log('📍 Mock Location:', mockCoords);
       sendLocation(mockCoords);
-    },30000);
+    },10000);
 
     watchId = intervalId;
   } else {
