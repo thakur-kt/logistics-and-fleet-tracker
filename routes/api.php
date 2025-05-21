@@ -36,20 +36,21 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
 
 //permissions
 Route::middleware(['auth:sanctum', 'role:admin'])->prefix('/admin')->group(function () {
-    Route::get('/permissions', [PermissionController::class, 'index']);
+    // Route::get('/permissions', [PermissionController::class, 'index']);
     Route::get('/users/{user}/permissions', [PermissionController::class, 'getUserPermissions']);
     Route::post('/users/{user}/assign-permission', [PermissionController::class, 'assign']);
     Route::post('/users/{user}/revoke-permission', [PermissionController::class, 'revoke']);
-});
-
-//roles and permission
-Route::middleware(['auth:sanctum', 'role:admin'])->prefix('/admin')->group(function () {
     Route::get('/roles', [RolePermissionController::class, 'roles']);
     Route::get('/permissions', [RolePermissionController::class, 'permissions']);
     Route::post('/roles', [RolePermissionController::class, 'createRole']);
     Route::post('/permissions', [RolePermissionController::class, 'createPermission']);
     Route::post('/roles/assign-permission', [RolePermissionController::class, 'assignPermissionToRole']);
     Route::post('/roles/remove-permission', [RolePermissionController::class, 'removePermissionFromRole']);
+});
+
+//roles and permission
+Route::middleware(['auth:sanctum'])->prefix('/admin')->group(function () {
+   
     Route::get('/dashboard-stats', [DashboardController::class, 'dashboardStats']);
 
    

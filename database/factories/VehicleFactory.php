@@ -24,10 +24,12 @@ class VehicleFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
-    'number_plate' => strtoupper(fake()->bothify('??##???')),
-    'model' => fake()->randomElement(['Tata Ace', 'Mahindra Bolero', 'Ashok Leyland']),
-    'status' => fake()->randomElement(['idle', 'en_route', 'maintenance']),
+            'user_id' => User::role('driver')->inRandomOrder()->first()?->id,
+            'number_plate' => strtoupper($this->faker->bothify('??## ???')),
+            'model' => $this->faker->word . ' ' . $this->faker->randomDigit(),
+            'status' => $this->faker->randomElement(['idle', 'en_route', 'maintenance']),
+            'last_lat' => $this->faker->latitude(28.4, 28.8),  // Random near Delhi
+            'last_lng' => $this->faker->longitude(76.9, 77.4),
         ];
     }
 

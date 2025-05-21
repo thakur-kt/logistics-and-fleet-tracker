@@ -25,13 +25,13 @@
         <p class="text-2xl font-semibold">{{ stats.assignedOrders }}</p>
       </div>
     </div>
-
+    <VehicleMap />
     <!-- Charts Section -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <TripCharts />
       <VehicleStatusChart />
     </div>
-
+   
     <!-- Recent Activity -->
     <div class="bg-white rounded-xl shadow p-4">
       <h2 class="text-lg font-bold mb-2">Recent Trip Activity</h2>
@@ -79,6 +79,8 @@
 import { ref, onMounted } from 'vue';
 import api from '@/axios';
 import TripCharts from '@/components/driver/TripCharts.vue';
+import VehicleMap from '@/components/admin/vehicles/VehicleMap.vue';
+
 const stats = ref({
   vehicles: 0,
   drivers: 0,

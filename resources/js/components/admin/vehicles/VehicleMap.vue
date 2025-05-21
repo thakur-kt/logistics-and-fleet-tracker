@@ -61,7 +61,7 @@
     }).addTo(map);
   
     fetchCoordinates();
-    setInterval(fetchCoordinates, 3000); // refresh every 10 seconds
+    setInterval(fetchCoordinates, 30000); // refresh every 10 seconds
   });
   </script>
   

@@ -11,12 +11,26 @@ use Illuminate\Support\Facades\Redis;
 use Carbon\Carbon;
 class VehicleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // if (!auth()->user()->hasRole('admin')) {
         //     abort(403, 'Unauthorized');
         // }
-        return Vehicle::with('driver')->get(); // eager load assigned driver
+        $query = Vehicle::query();
+
+        if ($request->search) {
+            $query->where('number_plate', 'like', "%{$request->search}%");
+        }
+    
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
+    
+        if ($request->sort_by && $request->sort_dir) {
+            $query->orderBy($request->sort_by, $request->sort_dir);
+        }
+        return  $query->paginate(10); // eager load assigned driver
+        
     }
 
     public function store(Request $request)
