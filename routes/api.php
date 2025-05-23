@@ -13,10 +13,14 @@ use App\Http\Controllers\Api\Admin\DashboardController;
 // use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Broadcast;
 
+// Register broadcasting routes with Sanctum authentication
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
-// Public
+
+// Public authentication routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+
+// Get authenticated user info, roles, and permissions
 Route::middleware('auth:sanctum')->get('user', function (Request $request) {
     return response()->json([
         'user' => $request->user(),
@@ -25,49 +29,48 @@ Route::middleware('auth:sanctum')->get('user', function (Request $request) {
     ]);
 });
 
+// Logout route for authenticated users
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
-//roles
-Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/users', [UserRoleController::class, 'index']);
-    Route::get('/roles/all', [UserRoleController::class, 'allRoles']);
-    Route::post('/users/{user}/roles', [UserRoleController::class, 'assignRoles']);
-});
 
-//permissions
+
+// Admin-only routes for managing permissions and roles
 Route::middleware(['auth:sanctum', 'role:admin'])->prefix('/admin')->group(function () {
-    // Route::get('/permissions', [PermissionController::class, 'index']);
-    Route::get('/users/{user}/permissions', [PermissionController::class, 'getUserPermissions']);
-    Route::post('/users/{user}/assign-permission', [PermissionController::class, 'assign']);
-    Route::post('/users/{user}/revoke-permission', [PermissionController::class, 'revoke']);
-    Route::get('/roles', [RolePermissionController::class, 'roles']);
-    Route::get('/permissions', [RolePermissionController::class, 'permissions']);
-    Route::post('/roles', [RolePermissionController::class, 'createRole']);
-    Route::post('/permissions', [RolePermissionController::class, 'createPermission']);
-    Route::post('/roles/assign-permission', [RolePermissionController::class, 'assignPermissionToRole']);
-    Route::post('/roles/remove-permission', [RolePermissionController::class, 'removePermissionFromRole']);
+   Route::get('/users', [UserRoleController::class, 'index']); // List users with roles
+    Route::get('/roles/all', [UserRoleController::class, 'allRoles']); // List all roles
+    Route::post('/users/{user}/roles', [UserRoleController::class, 'assignRoles']); // Assign roles to user
+    Route::get('/users/{user}/permissions', [PermissionController::class, 'getUserPermissions']); // Get user permissions
+    Route::post('/users/{user}/assign-permission', [PermissionController::class, 'assign']); // Assign permission to user
+    Route::post('/users/{user}/revoke-permission', [PermissionController::class, 'revoke']); // Revoke permission from user
+    Route::get('/roles', [RolePermissionController::class, 'roles']); // List roles with permissions
+    Route::get('/permissions', [RolePermissionController::class, 'permissions']); // List all permissions
+    Route::post('/roles', [RolePermissionController::class, 'createRole']); // Create new role
+    Route::post('/permissions', [RolePermissionController::class, 'createPermission']); // Create new permission
+    Route::post('/roles/assign-permission', [RolePermissionController::class, 'assignPermissionToRole']); // Assign permission to role
+    Route::post('/roles/remove-permission', [RolePermissionController::class, 'removePermissionFromRole']); // Remove permission from role
 });
 
-//roles and permission
+// Admin dashboard stats route (requires authentication)
 Route::middleware(['auth:sanctum'])->prefix('/admin')->group(function () {
-   
     Route::get('/dashboard-stats', [DashboardController::class, 'dashboardStats']);
-
-   
 });
-// Protected
+
+// Protected routes for authenticated users (drivers, dispatchers, etc.)
 Route::middleware('auth:sanctum')->group(function () {
-    
+    // Vehicle resource routes (CRUD)
     Route::apiResource('vehicles', VehicleController::class);
+    // Get all drivers
     Route::get('drivers', [VehicleController::class, 'drivers']);
+    // Delivery order resource routes (CRUD)
     Route::apiResource('delivery-orders', DeliveryOrderController::class);
+    // Update vehicle location
     Route::post('/vehicles/{id}/location', [VehicleController::class, 'updateLocation']);
-   
+    // Driver profile routes
     Route::get('drivers/me', [DriverController::class, 'show']);
     Route::put('drivers/me', [DriverController::class, 'update']);
-
+    // Update driver tracking/location
     Route::post('/tracking/update', [DriverController::class, 'updateLocation']);
-    // Route::get('/tracking/{vehicleId}', [VehicleController::class, 'getLocation']);
+    // Route::get('/tracking/{vehicleId}', [VehicleController::class, 'getLocation']); // (commented out)
+    // Get all vehicle coordinates
     Route::get('/vehicles-coordinates', [VehicleController::class, 'getAllVehicleCoords']);
-
 });

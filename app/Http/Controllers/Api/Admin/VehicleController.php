@@ -42,6 +42,8 @@ class VehicleController extends Controller
         'status' => 'in:idle,en_route,maintenance',
     ]);
     $validated['user_id'] = $request->user()->id;
+    $validated['last_lat']=22.8;
+    $validated['last_lng']=29.8;
     $vehicle = Vehicle::create($validated);
 
     return response()->json(['vehicle' => $vehicle], 201);
@@ -62,7 +64,8 @@ public function update(Request $request, $id)
         'model' => 'sometimes|required|string|max:255',
         'status' => 'in:idle,en_route,maintenance',
     ]);
-
+    $validated['last_lat']=22.8;
+    $validated['last_lng']=29.8;
     $vehicle->update($validated);
 
     return response()->json(['vehicle' => $vehicle]);

@@ -95,7 +95,7 @@
       api.get('/vehicles'),
       api.get('/drivers'),
     ])
-    vehicles.value = vehicleRes.data
+    vehicles.value = vehicleRes.data.data
     drivers.value = driverRes.data
   })
   
