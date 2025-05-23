@@ -59,8 +59,8 @@ A real-time logistics and fleet management system built using **Laravel** (backe
 ### 🖥️ Backend Setup (Laravel)
 
 ```bash
-git clone https://github.com/thakur-kt/logistics-fleet-management.git
-cd logistics-fleet-management
+git clone https://github.com/thakur-kt/logistics-and-fleet-tracker.git
+cd logistics-and-fleet-tracker
 
 # Install dependencies
 composer install
