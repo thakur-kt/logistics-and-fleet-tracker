@@ -12,46 +12,50 @@ class RolePermissionSeeder extends Seeder
         // Clear cached permissions to ensure fresh seeding
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Define all permissions used in the system
+        // Define all permissions used in the system, grouped by feature
         $permissions = [
-            'manage users',
-            'manage vehicles',
-            'assign deliveries',
-            'track vehicles',
-            'send chat',
-            'receive chat',
-            'view assigned orders',
-            'update order status',
-            'view profile',
-            'update location'
+            'Vehicle Management' => [
+                'view vehicles',
+                'add vehicle',
+                'edit vehicle',
+                'delete vehicle',
+            ],
+            'Driver Management' => [
+                'view drivers',
+                'assign drivers',
+                'track drivers',
+            ],
+            'Orders' => [
+                'create order',
+                'assign order',
+                'update order status',
+            ]
         ];
 
         // Create each permission if it doesn't already exist
-        foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+        foreach ($permissions as $group => $perms) {
+            foreach ($perms as $perm) {
+                Permission::firstOrCreate(['name' => $perm]);
+            }
         }
 
-        // Define roles for the system
-        $admin = Role::firstOrCreate(['name' => 'admin']);
-        $dispatcher = Role::firstOrCreate(['name' => 'dispatcher']);
-        $driver = Role::firstOrCreate(['name' => 'driver']);
+        // Define roles for the system and assign permissions
 
-        // Assign all permissions to the admin role
+        // Admin gets all permissions
+        $admin = Role::firstOrCreate(['name' => 'admin']);
         $admin->givePermissionTo(Permission::all());
 
-        // Assign a subset of permissions to the dispatcher role
+        // Dispatcher gets a subset of permissions
+        $dispatcher = Role::firstOrCreate(['name' => 'dispatcher']);
         $dispatcher->givePermissionTo([
-            'assign deliveries',
-            'track vehicles',
-            'send chat',
-            'receive chat',
+            'view vehicles', 
+            'assign order', 
         ]);
 
-        // Assign a subset of permissions to the driver role
+        // Driver gets a different subset of permissions
+        $driver = Role::firstOrCreate(['name' => 'driver']);
         $driver->givePermissionTo([
-            'track vehicles',
-            'receive chat',
-            'send chat',
+            'update order status', 
         ]);
     }
 }
