@@ -45,18 +45,26 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
+// Reactive form object for login fields
 const form = ref({
     email: '',
     password: '',
-  })
+})
+
+// Access the authentication store (Pinia)
 const auth = useAuthStore()
+// Access the Vue Router instance for navigation
 const router = useRouter()
 
+// Login function to submit form data to the auth store
 const login = async () => {
   try {
+    // Call the login action from the auth store with form data
     await auth.login(form.value)
+    // Optionally, redirect the user after successful login
     // router.push('/')
   } catch (err) {
+    // Show an alert if login fails
     alert('Login failed')
   }
 }

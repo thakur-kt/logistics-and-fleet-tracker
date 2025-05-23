@@ -56,11 +56,16 @@
 import { ref, onMounted } from 'vue'
 import api from '@/axios'
 
+// Reactive array to hold all users
 const users = ref([])
+// Reactive array to hold all available permissions
 const permissions = ref([])
+// Loading state for UI feedback
 const loading = ref(true)
 
+// Fetch users and permissions from the API
 const fetchData = async () => {
+  // Fetch users and permissions in parallel
   const [userRes, permissionRes] = await Promise.all([
     api.get('/admin/users'),
     api.get('/admin/permissions')
@@ -68,24 +73,27 @@ const fetchData = async () => {
   users.value = userRes.data
   permissions.value = permissionRes.data
 
-  // fetch each user's permissions
+  // For each user, fetch their assigned permissions
   await Promise.all(users.value.map(async user => {
     const res = await api.get(`/admin/users/${user.id}/permissions`)
-    user.userPermissions = res.data
+    user.userPermissions = res.data // Attach permissions to user object
   }))
 
-  loading.value = false
+  loading.value = false // Data loaded, hide loading indicator
 }
 
+// Assign a permission to a user and refresh data
 const assignPermission = async (userId, permission) => {
   await api.post(`/admin/users/${userId}/assign-permission`, { permission })
-  await fetchData()
+  await fetchData() // Refresh user data after assignment
 }
 
+// Revoke a permission from a user and refresh data
 const revokePermission = async (userId, permission) => {
   await api.post(`/admin/users/${userId}/revoke-permission`, { permission })
-  await fetchData()
+  await fetchData() // Refresh user data after revocation
 }
 
+// Fetch data when component is mounted
 onMounted(fetchData)
 </script>

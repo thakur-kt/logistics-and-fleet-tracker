@@ -2,12 +2,18 @@
 import { ref, onMounted } from 'vue'
 import api from '@/axios'
 import { useAuthStore } from '@/stores/auth'
+
+// Reactive array to hold all users
 const users = ref([])
+// Reactive array to hold all available roles
 const allRoles = ref([])
 
+// Object to track selected roles for each user (userId: [roles])
 const selectedRoles = ref({}) // { userId: ['admin', 'dispatcher'] }
 
+// Fetch users and roles from the API
 const fetchData = async () => {
+  // Fetch users and roles in parallel
   const [u, r] = await Promise.all([
     api.get('/admin/users'),
     api.get('/admin/roles/all'),
@@ -15,16 +21,20 @@ const fetchData = async () => {
   users.value = u.data
   allRoles.value = r.data
 
+  // Initialize selectedRoles for each user based on their current roles
   u.data.forEach(user => {
     selectedRoles.value[user.id] = user.roles.map(role => role.name)
   })
 }
 
+// Update roles for a specific user via the API
 const updateRoles = async (userId) => {
   await api.post(`/admin/users/${userId}/roles`, {
     roles: selectedRoles.value[userId],
   })
 }
+
+// Fetch data when the component is mounted
 onMounted(fetchData)
 </script>
 

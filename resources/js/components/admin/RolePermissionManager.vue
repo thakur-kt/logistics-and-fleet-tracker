@@ -55,14 +55,22 @@
 import { ref, onMounted } from 'vue'
 import api from '@/axios'
 
+// Reactive array to hold all roles with their permissions
 const roles = ref([])
+// Reactive array to hold all available permissions
 const permissions = ref([])
+// Reactive variable for new role input
 const newRole = ref('')
+// Reactive variable for new permission input
 const newPermission = ref('')
+// Reactive variable for selected role in assignment dropdown
 const selectedRole = ref('')
+// Reactive variable for selected permission in assignment dropdown
 const selectedPermission = ref('')
 
+// Fetch all roles and permissions from the API
 const fetchAll = async () => {
+  // Fetch roles and permissions in parallel
   const [r, p] = await Promise.all([
     api.get('/admin/roles'),
     api.get('/admin/permissions'),
@@ -71,6 +79,7 @@ const fetchAll = async () => {
   permissions.value = p.data
 }
 
+// Create a new role using the API and refresh the list
 const createRole = async () => {
   if (!newRole.value) return
   await api.post('/admin/roles', { name: newRole.value })
@@ -78,6 +87,7 @@ const createRole = async () => {
   await fetchAll()
 }
 
+// Create a new permission using the API and refresh the list
 const createPermission = async () => {
   if (!newPermission.value) return
   await api.post('/admin/permissions', { name: newPermission.value })
@@ -85,6 +95,7 @@ const createPermission = async () => {
   await fetchAll()
 }
 
+// Assign a permission to a role using the API and refresh the list
 const assignPermission = async () => {
   if (!selectedRole.value || !selectedPermission.value) return
   await api.post('/admin/roles/assign-permission', {
@@ -94,6 +105,7 @@ const assignPermission = async () => {
   await fetchAll()
 }
 
+// Revoke a permission from a role using the API and refresh the list
 const revokePermission = async (role, perm) => {
   await api.post('/admin/roles/remove-permission', {
     role,
@@ -102,5 +114,6 @@ const revokePermission = async (role, perm) => {
   await fetchAll()
 }
 
+// Fetch roles and permissions when the component is mounted
 onMounted(fetchAll)
 </script>

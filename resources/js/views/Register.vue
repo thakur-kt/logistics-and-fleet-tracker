@@ -83,26 +83,31 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue'
-  import { useAuthStore } from '@/stores/auth'
-  
-  const form = ref({
-    name: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
-    role: 'driver',
-  })
-  
-  const auth = useAuthStore()
-  
-  const register = async () => {
-    try {
-      await auth.register(form.value)
-      // alert('Registered! Please verify your email.')
-    } catch (err) {
-      console.error(err)
-    }
+import { ref } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+
+// Reactive form object for registration fields
+const form = ref({
+  name: '',
+  email: '',
+  password: '',
+  password_confirmation: '',
+  role: 'driver', // Default role is driver
+})
+
+// Access the authentication store (Pinia)
+const auth = useAuthStore()
+
+// Register function to submit form data to the auth store
+const register = async () => {
+  try {
+    // Call the register action from the auth store with form data
+    await auth.register(form.value)
+    // Optionally, show a success message or redirect after registration
+    alert('Registered! Please verify your email.')
+  } catch (err) {
+    // Log any registration errors to the console
+    console.error(err)
   }
-  </script>
-  
+}
+</script>

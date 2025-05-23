@@ -81,6 +81,7 @@ import api from '@/axios';
 import TripCharts from '@/components/driver/TripCharts.vue';
 import VehicleMap from '@/components/admin/vehicles/VehicleMap.vue';
 
+// Reactive object to hold dashboard statistics
 const stats = ref({
   vehicles: 0,
   drivers: 0,
@@ -88,15 +89,19 @@ const stats = ref({
   completedOrders: 0
 });
 
+// Array to hold recent trip/delivery order data
 const recentTrips = ref([]);
 
+// Lifecycle hook: runs when component is mounted
 onMounted(async () => {
+  // Fetch dashboard statistics from the API
   const res = await api.get('/admin/dashboard-stats');
   stats.value = res.data.stats;
 
+  // Fetch all delivery orders for recent trips table
   const resp = await api.get('/delivery-orders')
-  // Dummy trips (replace with API call if needed)
-  recentTrips.value =resp.data;
+  // Assign fetched delivery orders to recentTrips array
+  recentTrips.value = resp.data;
 });
 </script>
 
