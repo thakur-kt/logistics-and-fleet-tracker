@@ -7,16 +7,17 @@
   import { onMounted, ref } from 'vue';
   import api from '@/axios';
   
-  let map;
-  const vehicleMarkers = ref({});
+  let map; // Leaflet map instance
+  const vehicleMarkers = ref({}); // Store markers by vehicle ID
   
-  // Custom icons by status
+  // Custom icons by status for different vehicle states
   const iconColors = {
     idle: 'blue',
     en_route: 'green',
     completed: 'gray'
   };
   
+  // Function to create a custom Leaflet icon based on color
   const createCustomIcon = (color) => {
     return L.divIcon({
       className: 'custom-marker',
@@ -26,6 +27,7 @@
     });
   };
   
+  // Fetch all vehicle coordinates from the API and update markers
   const fetchCoordinates = async () => {
     try {
       const response = await api.get('vehicles-coordinates');
@@ -37,8 +39,10 @@
         const color = iconColors[vehicle.status] || 'blue';
   
         if (vehicleMarkers.value[id]) {
+          // If marker exists, just update its position
           vehicleMarkers.value[id].setLatLng(coords);
         } else {
+          // Create a new marker with custom icon and popup
           const marker = L.marker(coords, {
             icon: createCustomIcon(color)
           }).addTo(map).bindPopup(`
@@ -50,6 +54,7 @@
         }
       });
     } catch (err) {
+      // Log any errors during fetch
       console.error('Error fetching vehicle coordinates', err);
     }
   };
@@ -72,4 +77,3 @@
     align-items: center;
   }
   </style>
-  

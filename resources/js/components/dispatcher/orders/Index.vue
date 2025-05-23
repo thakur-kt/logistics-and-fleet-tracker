@@ -61,55 +61,73 @@
   </template>
   
   <script setup>
-  import { ref, onMounted ,onBeforeUnmount} from 'vue'
+  import { ref, onMounted, onBeforeUnmount } from 'vue'
   import api from '@/axios'
   import OrderForm from './Form.vue'
   import { initEcho } from '@/utils/echo';
   import { useAuthStore } from '@/stores/auth';
+
+  // Reactive array to hold all delivery orders
   const orders = ref([])
+  // Holds the currently selected order for editing
   const selectedOrder = ref(null)
+  // Controls visibility of the order form modal
   const showModal = ref(false)
-  
+
+  // Filters for searching and filtering orders
   const filters = ref({
     pickup: '',
     dropoff: '',
     status: '',
   })
-  
+
+  // Fetch delivery orders from the API with current filters
   const fetchOrders = async () => {
     const res = await api.get('/delivery-orders', { params: filters.value })
     orders.value = res.data
   }
-  
+
+  // Open the modal for adding or editing an order
   const openModal = (order = null) => {
     selectedOrder.value = order
     showModal.value = true
   }
-  
+
+  // Delete an order by ID and refresh the list
   const deleteOrder = async (id) => {
     if (confirm('Delete this order?')) {
       await api.delete(`/delivery-orders/${id}`)
       fetchOrders()
     }
   }
+
+  // Access the authentication store for user token
   const authStore = useAuthStore();
+  // Initialize Echo for real-time event listening, passing the auth token
   const Echo = initEcho(authStore.token);
+  // Hardcoded orderId and vehicleId for demonstration (replace with dynamic values if needed)
   const orderId = 2;
-  const vehicleId=1;
-onMounted(() => {
-  fetchOrders();
-  //note: if not listening run : php artisan queue:work
-Echo.private(`orders.${orderId}`)
-  .listen('.DeliveryOrderUpdated', (e) => {
-    console.log('✅ Order Updated Event:', e.order);
+  const vehicleId = 1;
+
+  // Lifecycle hook: runs when component is mounted
+  onMounted(() => {
+    fetchOrders();
+    // Note: if not listening run : php artisan queue:work redis
+    // Listen for real-time order update events on a private channel
+    Echo.private(`orders.${orderId}`)
+      .listen('.DeliveryOrderUpdated', (e) => {
+        console.log('✅ Order Updated Event:', e.order);
+      });
+    // Listen for real-time vehicle tracking events on a private channel
+    Echo.private(`vehicle.${vehicleId}`)
+      .listen('.TrackingLive', (e) => {
+        console.log('✅ TrackingLive Event:', e);
+      });
   });
-  Echo.private(`vehicle.${vehicleId}`)
-  .listen('.TrackingLive', (e) => {
-    console.log('✅ TrackingLive Event:', e);
+
+  // Cleanup Echo listeners when component is about to be unmounted
+  onBeforeUnmount(() => {
+    Echo.leave(`orders.${orderId}`);
+    Echo.leave(`vehicle.${vehicleId}`);
   });
-});
-onBeforeUnmount(() => {
-  Echo.leave(`orders.${orderId}`);
-});
   </script>
-  

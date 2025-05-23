@@ -37,49 +37,59 @@
   import { ref, watch } from 'vue'
   import api from '@/axios'
   
+  // Define props for the component: vehicle object and show boolean
   const props = defineProps({
     vehicle: Object,
     show: Boolean,
   })
   
+  // Define emitted events: 'close' for closing modal, 'saved' after save
   const emits = defineEmits(['close', 'saved'])
   
+  // Reactive form object for vehicle fields
   const form = ref({
     number_plate: '',
     model: '',
     status: '',
   })
   
+  // Watch for changes to the vehicle prop to populate or reset the form
   watch(
     () => props.vehicle,
     (newVal) => {
       if (newVal) {
+        // If editing, populate form with vehicle data
         form.value = { ...newVal }
       } else {
+        // If adding, reset form fields
         form.value = {
           number_plate: '',
-    model: '',
-    status: '',
+          model: '',
+          status: '',
         }
       }
     },
-    { immediate: true }
+    { immediate: true } // Run immediately on component mount
   )
   
+  // Save vehicle (create or update based on presence of id)
   const saveVehicle = async () => {
     try {
       if (props.vehicle?.id) {
+        // Update existing vehicle
         await api.put(`/vehicles/${props.vehicle.id}`, form.value)
       } else {
+        // Create new vehicle
         await api.post('/vehicles', form.value)
       }
-      emits('saved')
-      emits('close')
+      emits('saved') // Emit saved event for parent to refresh list
+      emits('close') // Close the modal
     } catch (e) {
+      // Optionally handle error (e.g., show alert)
       // alert('Failed to save vehicle')
     }
   }
   
+  // Close the modal dialog
   const close = () => emits('close')
   </script>
-  

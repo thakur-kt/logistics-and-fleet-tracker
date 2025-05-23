@@ -6,5 +6,4 @@
 
 <script setup>
 import Sidebar from './common/Sidebar.vue'
-
 </script>

@@ -77,45 +77,58 @@
 </template>
 
 <script setup>
-import { ref, onMounted,watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useDebounceFn } from '@vueuse/core'; 
 import api from '@/axios'
 import VehicleForm from './Form.vue'
 
+// Reactive object to hold paginated vehicles data
 const vehicles = ref({ data: [], current_page: 1, last_page: 1 });
+// Controls visibility of the vehicle form modal
 const showModal = ref(false)
+// Holds the vehicle being edited (null for add)
 const selectedVehicle = ref(null)
+// Search input for filtering vehicles
 const search = ref('');
+// Sorting field and direction
 const sortBy = ref('number_plate');
 const sortDir = ref('asc');
+// Status filter for vehicles
 const statusFilter = ref('');
 
+// Debounced search to avoid excessive API calls
 const debouncedSearch = useDebounceFn(() => {
   fetchVehicles();
 }, 500); // 500ms debounce
+
+// Watch search input and trigger debounced fetch
 watch(search, debouncedSearch);
-watch([statusFilter,sortDir], () => {
+// Watch status and sort changes and fetch immediately
+watch([statusFilter, sortDir], () => {
   fetchVehicles();
 });
 
+// Fetch vehicles from API with current filters and pagination
 const fetchVehicles = async (page = 1) => {
   const res = await api.get(`/vehicles`, {
       params: {
         page: page,
         search: search.value,
-        status:statusFilter.value,
-        sort_by:sortBy.value,
-        sort_dir:sortDir.value
+        status: statusFilter.value,
+        sort_by: sortBy.value,
+        sort_dir: sortDir.value
       },
     });
   vehicles.value = res.data
 }
 
+// Open modal for adding or editing a vehicle
 const openModal = (vehicle = null) => {
   selectedVehicle.value = vehicle
   showModal.value = true
 }
 
+// Delete a vehicle by ID
 const deleteVehicle = async (id) => {
   if (confirm('Delete this vehicle?')) {
     await api.delete(`/vehicles/${id}`)
@@ -123,5 +136,6 @@ const deleteVehicle = async (id) => {
   }
 }
 
+// Fetch vehicles on component mount
 onMounted(fetchVehicles)
 </script>

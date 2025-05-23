@@ -90,66 +90,75 @@
   </div>
 </template>
 <script setup>
-import { ref, watchEffect, onMounted,computed,defineAsyncComponent} from 'vue'
-import { Menu,
-   LogOut, Sun, Moon, Home, Truck, Users,
-  Settings,
-  ChevronLeft,
-  ChevronRight,
-  ChevronDown
- } from 'lucide-vue-next'
+import { ref, watchEffect, onMounted, computed, defineAsyncComponent } from 'vue'
+import { Menu, LogOut, Sun, Moon, Home, Truck, Users, Settings, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-vue-next'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth';
 import { loadIcon } from '@/utils/lazyIcon'
+
+// Get the current route for active link highlighting
 const route = useRoute()
+// Sidebar expanded/collapsed state, persisted in localStorage
 const isSidebarExpanded = ref(JSON.parse(localStorage.getItem('sidebarExpanded') || 'true'))
+// Theme state (light/dark), persisted in localStorage
 const theme = ref(localStorage.getItem('theme') || 'light')
 
-// Add all public routes where sidebar should be hidden
+// List of route names where sidebar should be hidden (e.g., login/register)
 const hideSidebarRoutes = ['login', 'register']; // by name
 
+// Computed property to determine if sidebar should be hidden
 const shouldHideSidebar = computed(() => {
   return hideSidebarRoutes.includes(route.name);
 });
+
+// Import navigation items (array of sidebar links/groups)
 import { navItems } from '../layout/NavItems.js' 
-const openGroups = ref({}) // Track opened groups
+// Track which sidebar groups are open (for collapsible menus)
+const openGroups = ref({}) 
+// Access the authentication store for role-based navigation
 const auth = useAuthStore();
 
-
-// Toggle Group
+// Toggle a sidebar group open/closed
 function toggleGroup(name) {
   openGroups.value[name] = !openGroups.value[name]
 }
 
-// Check if any child is active
+// Check if any child route in a group is active (for highlighting)
 function isGroupActive(group) {
   return group.children?.some(child => route.path === child.to)
 }
 
+// Filter navigation items based on user roles
 const filteredNavItems = computed(() => {
   if (!auth.roles.length) return [];
   return navItems.filter(item => 
     item.roles.some(role => auth.roles.includes(role))
   );
 });
+
+// Toggle sidebar expanded/collapsed and persist state
 const toggleSidebar = () => {
   isSidebarExpanded.value = !isSidebarExpanded.value
   localStorage.setItem('sidebarExpanded', JSON.stringify(isSidebarExpanded.value))
 }
 
+// Toggle theme (light/dark) and persist state
 const toggleTheme = () => {
   theme.value = theme.value === 'light' ? 'dark' : 'light'
   localStorage.setItem('theme', theme.value)
 }
 
+// Handle logout by calling the auth store's logout action
 const handleLogout = async () => {
   await auth.logout()
 }
 
+// Watch theme and update the document's class for dark mode
 watchEffect(() => {
   document.documentElement.classList.toggle('dark', theme.value === 'dark')
 })
 
+// Set initial theme on mount
 onMounted(() => {
   document.documentElement.classList.toggle('dark', theme.value === 'dark')
 })

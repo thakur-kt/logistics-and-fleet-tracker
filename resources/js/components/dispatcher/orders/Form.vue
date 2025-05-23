@@ -54,13 +54,16 @@
   import { ref, watch, onMounted } from 'vue'
   import api from '@/axios'
   
+  // Define props for modal visibility and the order being edited/created
   const props = defineProps({
     show: Boolean,
     order: Object,
   })
   
+  // Define emitted events: 'close' for closing modal, 'saved' after save
   const emits = defineEmits(['close', 'saved'])
   
+  // Reactive form object for delivery order fields
   const form = ref({
     pickup_location: '',
     dropoff_location: '',
@@ -69,15 +72,19 @@
     driver_id: null,
   })
   
+  // Arrays to hold available vehicles and drivers for selection
   const vehicles = ref([])
   const drivers = ref([])
   
+  // Watch for changes to the order prop to populate or reset the form
   watch(
     () => props.order,
     (val) => {
       if (val) {
+        // If editing, populate form with order data
         form.value = { ...val }
       } else {
+        // If creating, reset form fields
         form.value = {
           pickup_location: '',
           dropoff_location: '',
@@ -87,26 +94,29 @@
         }
       }
     },
-    { immediate: true }
+    { immediate: true } // Run immediately on component mount
   )
   
+  // Fetch vehicles and drivers when component is mounted
   onMounted(async () => {
     const [vehicleRes, driverRes] = await Promise.all([
       api.get('/vehicles'),
       api.get('/drivers'),
     ])
-    vehicles.value = vehicleRes.data.data
-    drivers.value = driverRes.data
+    vehicles.value = vehicleRes.data.data // Assign fetched vehicles
+    drivers.value = driverRes.data        // Assign fetched drivers
   })
   
+  // Save order (create or update based on presence of id)
   const saveOrder = async () => {
     if (props.order?.id) {
+      // Update existing order
       await api.put(`/delivery-orders/${props.order.id}`, form.value)
     } else {
+      // Create new order
       await api.post('/delivery-orders', form.value)
     }
-    emits('saved')
-    emits('close')
+    emits('saved') // Emit saved event for parent to refresh list
+    emits('close') // Close the modal
   }
   </script>
-  
